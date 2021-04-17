@@ -157,6 +157,21 @@ public class MySQLSetterGetter {
         return false;
     }
 
+    public int currentOrderNum() {
+        try {
+            PreparedStatement statement = Main.getConnection().prepareStatement("SELECT MAX(ono) AS top_ono FROM orders");
+
+            ResultSet results = statement.executeQuery();
+            if(results.next()) {
+                return results.getInt("top_ono") + 1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 1;
+    }
+
     public boolean addOrder(Order order) {
         try {
             PreparedStatement statement = Main.getConnection().prepareStatement("SELECT * FROM orders WHERE ono=?");
