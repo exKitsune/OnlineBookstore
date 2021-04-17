@@ -69,4 +69,8 @@ public class Order {
     public int getZip() {
         return zip;
     }
+
+    public String toString() {
+        return String.format("Order Number: %d\nAddress: %s\nCity: %s\nState: %s\nZip: %d\nOrder Date: %s\nShip Date: %s", orderNum, addr, city, state, zip, orderDate.toString(), shipDate.toString());
+    }
 }

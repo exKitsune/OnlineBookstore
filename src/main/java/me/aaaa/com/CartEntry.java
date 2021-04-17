@@ -24,4 +24,7 @@ public class CartEntry {
         return qty;
     }
 
+    public String toString(double price, String title) {
+        return String.format("%s    %s              %,.2f  %d    %,.2f", ISBN, title, price, qty, qty*price);
+    }
 }

@@ -29,4 +29,8 @@ public class OrderDetails {
     public double getPrice() {
         return price;
     }
+
+    public String toString(String title) {
+        return String.format("%s    %s              %,.2f  %d    %,.2f", ISBN, title, price, qty, qty*price);
+    }
 }

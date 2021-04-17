@@ -35,10 +35,10 @@ public class MySQLSetterGetter {
         return false;
     }
 
-    public Book getBook(String queryType, String query) { //acceptable queryTypes: "isbn", "author", "title", "subject"
+    public Book getBook(String ISBN) { 
         try {
-            PreparedStatement statement = Main.getConnection().prepareStatement("SELECT * FROM books WHERE " + queryType + "=?");
-            statement.setString(1, query);
+            PreparedStatement statement = Main.getConnection().prepareStatement("SELECT * FROM books WHERE isbn=?");
+            statement.setString(1, ISBN);
 
             ResultSet results = statement.executeQuery();
             if (results.next()) {
@@ -51,6 +51,25 @@ public class MySQLSetterGetter {
         }
 
         return new Book();
+    }
+
+    public List<Books> getBooksByQuery(String queryType, String query) { //queryTypes: "author", "title", "subject"
+        List<Books> books = new ArrayList<>();
+        try {
+            PreparedStatement statement = Main.getConnection().prepareStatement("SELECT * FROM books WHERE " + queryType + "=?");
+            statement.setString(1, query);
+
+            ResultSet results = statement.executeQuery();
+            while (results.next()) {
+                Book book = new Book(results.getString("isbn"), results.getString("author"), results.getString("title"), results.getDouble("price"), results.getString("subject"));
+                
+                books.add(book);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return books;
     }
 
     public List<String> getBookSubjects(){
@@ -88,7 +107,7 @@ public class MySQLSetterGetter {
                 insert.setString(9, person.getUID());
                 insert.setString(10, person.getPass());
                 insert.setString(11, person.getCCType());
-                insert.setInt(12, person.getCCNum());
+                insert.setString(12, person.getCCNum());
                 insert.executeUpdate();
 
                 return true;
@@ -117,7 +136,7 @@ public class MySQLSetterGetter {
                         results.getString("userid"),
                         results.getString("password"),
                         results.getString("creditcardtype"),
-                        results.getInt("creditcardnumber"));
+                        results.getString("creditcardnumber"));
                 return person;
             }
         } catch (SQLException e) {
@@ -145,7 +164,7 @@ public class MySQLSetterGetter {
                 insert.setString(8, person.getEmail());
                 insert.setString(9, person.getPass());
                 insert.setString(10, person.getCCType());
-                insert.setInt(11, person.getCCNum());
+                insert.setString(11, person.getCCNum());
                 insert.setString(12, person.getUID());
                 insert.executeUpdate();
                 return true;

@@ -1,9 +1,9 @@
 package me.aaaa.com;
 
 public class Person {
-    private String fName, lName, addr, city, state, phone, email, uid, pass, ccType;
-    private int zip, ccNum;
-    public Person(String fName, String lName, String addr, String city, String state, int zip, String phone, String email, String uid, String pass, String ccType, int ccNum) {
+    private String fName, lName, addr, city, state, phone, email, uid, pass, ccType, ccNum;
+    private int zip;
+    public Person(String fName, String lName, String addr, String city, String state, int zip, String phone, String email, String uid, String pass, String ccType, String ccNum) {
         this.fName = fName;
         this.lName = lName;
         this.addr = addr;
@@ -84,9 +84,10 @@ public class Person {
         return email;
     }
 
-    public void updateUID(String nuid) {
-        uid = nuid;
-    }
+    // should not be able to update uid
+    // public void updateUID(String nuid) {
+    //     uid = nuid;
+    // }
 
     public String getUID() {
         return uid;
@@ -108,11 +109,11 @@ public class Person {
         return ccType;
     }
 
-    public void updateCCNum(int nccnum) {
+    public void updateCCNum(String nccnum) {
         ccNum = nccnum;
     }
 
-    public int getCCNum() {
+    public String getCCNum() {
         return ccNum;
     }
 }
