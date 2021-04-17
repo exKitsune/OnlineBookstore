@@ -391,4 +391,19 @@ public class MySQLSetterGetter {
 
         return false;
     }
+
+    public boolean clearCart(String userid) {
+        try {
+            PreparedStatement statement = Main.getConnection().prepareStatement("DELETE FROM cart WHERE userid=?");
+            statement.setString(1, userid);
+
+            statement.execute();
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }
