@@ -1,3 +1,5 @@
+package me.aaaa.com;
+
 public class Person {
     private String fName, lName, addr, city, state, phone, email, uid, pass, ccType;
     private int zip, ccNum;
@@ -15,6 +17,8 @@ public class Person {
         this.ccType = ccType;
         this.ccNum = ccNum;
     }
+
+    public Person() {}
 
     public void updateFirstName(String name) {
         fName = name;
@@ -38,6 +42,22 @@ public class Person {
 
     public String getAddr() {
         return addr;
+    }
+
+    public void updateCity(String ncity) {
+        city = ncity;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void updateState(String nstate) {
+        state = nstate;
+    }
+
+    public String getState() {
+        return state;
     }
 
     public void updateZip(int nzip) {

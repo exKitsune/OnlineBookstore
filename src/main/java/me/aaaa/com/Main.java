@@ -1,25 +1,18 @@
+package me.aaaa.com;
+
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
-import java.io.File;  // Import the File class
-import java.io.FileNotFoundException;  // Import this class to handle errors
-import java.util.Scanner; // Import the Scanner class to read text files
-import java.util.HashMap;
-import java.util.List;
-import Thread;
-
-import Person;
-import Book;
-import Order;
+import java.util.*;
 
 public class Main {
     private static Connection connection;
     public static String host, database, username, password, table;
     public static int port;
-    MySQLSetterGetter msg;
+    public static MySQLSetterGetter msg;
 
     public static HashMap<String, Integer> usercart;
     public static List<Order> orders;
@@ -49,7 +42,7 @@ public class Main {
     }
 
     public static void createTables() throws IOException, SQLException {
-        URL resource = Resources.getResource(Main.class,"tables.sql");
+        URL resource = Resources.getResource(Main.class, "tables.sql");
         String[] databaseStructure = Resources.toString(resource, Charsets.UTF_8).split(";");
 
         if (databaseStructure.length == 0) {
@@ -111,35 +104,33 @@ public class Main {
         System.out.println("Enter password: ");
         String pass = keyboard.nextLine();
         System.out.println("Do you wish to store credit card information(y/n): ");
-        char option = keyboard.nextLine();
+        String option = keyboard.nextLine();
 
         //TODO: Add if/else statement for registration success/failure
+        String ccType = "None";
+        int ccNum = 0000000000000000;
+        if(option.equals('y')) {
+            System.out.println("Enter type of Credit Card (amex/discover/mc/visa): ");
+            ccType = keyboard.nextLine().toLowerCase();
+            int ccNumLength;
 
-        if(option == 'y')
-        {
-            System.out.println("Enter type of Credit Card(amex/visa): ");
-            String ccType = keyboard.nextLine();
-
-            if (ccType == 'amex') 
+            if (ccType.equals("amex"))
             {
                 do{
                     System.out.println("Enter Credit Card Number: ");
-                    int ccNum = keyboard.nextLine();
-                    int ccNumLength = String.valueOf(ccNum).length();
+                    ccNum = Integer.valueOf(keyboard.nextLine());
+                    ccNumLength = String.valueOf(ccNum).length();
 
                     if(ccNumLength != 15)
                     {
                         System.out.println("Invalid Entry.");
                     }
                 }while(ccNumLength != 15);
-            }
-
-            if (ccType == 'visa') 
-            {
+            } else {
                 do{
                     System.out.println("Enter Credit Card Number: ");
-                    int ccNum = keyboard.nextLine();
-                    int ccNumLength = String.valueOf(ccNum).length();
+                    ccNum = Integer.valueOf(keyboard.nextLine());
+                    ccNumLength = String.valueOf(ccNum).length();
 
                     if(ccNumLength != 16)
                     {
@@ -147,13 +138,10 @@ public class Main {
                     }
                 }while(ccNumLength != 16);
             }
-            msg.addMember(fName, lName, addr, city, state, zip, phone, email, uid, pass, ccType, ccNum);
+
         }
-        else if(option == 'n'){
-            String ccType = 'None'
-            int ccNum = 0000000000000000
-            msg.addMember(fName, lName, addr, city, state, zip, phone, email, uid, pass, ccType, ccNum);
-        }
+
+        msg.addMember(fName, lName, addr, city, state, zip, phone, email, uid, pass, ccType, ccNum);
         
         System.out.printf("You have registered successfully.");
         System.out.printf("Name:%-30.30s %s", fName, lName);
@@ -208,11 +196,12 @@ public class Main {
     public static void search(){
         Scanner keyboard = new Scanner(System.in);
         //ResultSet res = msg.listBooks();
+        int choice;
         do{
             System.out.println("1. Author Search")
             System.out.println("2. Title Search")
             System.out.println("3. Go back to Member Menu\n")
-            char choice = keyboard.nextInt();
+            choice = keyboard.nextInt();
             
             if(choice == 1)
             {
@@ -271,8 +260,8 @@ public class Main {
         Iterator it = usercart.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
-            Book book = msg.getBookDetails(pair.getKey()); // get book from ISBN
-            int quantity = pair.getValue();
+            Book book = msg.getBook((String) pair.getKey()); // get book from ISBN
+            int quantity = (int) pair.getValue();
             System.out.println(book.getISBN() + "\t" + book.getTitle() + "\t" + book.getPrice() + "\t" + quantity + "\t" + book.getPrice() * quantity);
             it.remove(); // avoids a ConcurrentModificationException
         }
@@ -281,7 +270,7 @@ public class Main {
     public static void viewEditCart(){
         Scanner keyboard = new Scanner(System.in);
 
-        System.out.println("Current Cart Contents:                                                                                  ");
+        System.out.println("Current CartEntry Contents:                                                                                  ");
         System.out.println("");
         System.out.println("ISBN          Title                                                                      $  Qty    Total");
         System.out.println("--------------------------------------------------------------------------------------------------------");
@@ -296,14 +285,14 @@ public class Main {
         System.out.println("e to edit cart or");
         System.out.println("q to go back to Menu: ");
         String choice = keyboard.nextLine();
-        if (choice == 'e'){
+        if (choice.equalsIgnoreCase("e")) {
             System.out.println("Enter ISBN of the item: ");
             int isbn = keyboard.nextInt();
             System.out.println("Enter new Quantity: ");
             int quantity = keyboard.nextInt();
             System.out.println("Edit Item Completed");
         }
-        else if (choice == 'd'){
+        else if (choice.equalsIgnoreCase("d")){
             System.out.println("Enter ISBN of the item: ");
             int isbn = keyboard.nextInt();
             System.out.println("Delete Item Completed");
@@ -328,7 +317,7 @@ public class Main {
         System.out.println("");
         System.out.println("Enter the Order No to diplay its details or (q) to quit: ");//maybe lets just quit
         String choice = keyboard.nextLine();
-        if (choice =='q'){
+        if (choice.equalsIgnoreCase("q")){
             return;
         }
     }
@@ -336,7 +325,7 @@ public class Main {
     public static void checkout(){
         Scanner keyboard = new Scanner(System.in);
 
-        System.out.println("Current Cart Contents:                                                                                  ");
+        System.out.println("Current CartEntry Contents:                                                                                  ");
         System.out.println("");
         System.out.println("ISBN          Title                                                                      $  Qty    Total");
         System.out.println("--------------------------------------------------------------------------------------------------------");
@@ -350,10 +339,10 @@ public class Main {
 
         System.out.println("Proceed to checkout (Y/N): ");
         String choice = keyboard.nextLine();
-        if ((choice == 'y') || (choice == 'Y')){
-            System.out.println("do you want to enter a new shipping address (Y/N): ");
-            String choice = keyboard.nextLine();
-            if ((choice = 'y') || (choice = 'Y')){
+        if (choice.equalsIgnoreCase("y")) {
+            System.out.println("Do you want to enter a new shipping address (Y/N): ");
+            choice = keyboard.nextLine();
+            if (choice.equalsIgnoreCase("y")){
                 System.out.println("Enter first name: ");
                 String fName = keyboard.nextLine();
                 System.out.println("Enter last name: ");
@@ -367,48 +356,45 @@ public class Main {
                 System.out.println("Enter zip: ");
                 int zip = keyboard.nextInt();
             }
-            System.out.println("Do you want to enter a new CreditCard number (Y/N): ");
-            String choice = keyboard.nextLine();
-            if ((choice = 'y') || (choice = 'Y')){
-                System.out.println("Enter Credit Card Number: ");
-                int ccNum = keyboard.nextLine();
-                int ccNumLength = String.valueOf(ccNum).length();
+        System.out.println("Do you want to enter a new CreditCard number (Y/N): ");
+        choice = keyboard.nextLine();
+        int ccNumLength = 0;
+        if (choice.equalsIgnoreCase("y")){
+            System.out.println("Enter Credit Card Number: ");
+            int ccNum = Integer.valueOf(keyboard.nextLine());
+            ccNumLength = String.valueOf(ccNum).length();
 
-                    if(ccNumLength != 15)
-                    {
-                        System.out.println("Invalid Entry.");
-                    }
-                }while(ccNumLength != 15);
-            }
-            System.out.println("                              Invoice for Order No.666                                                  ");
-            System.out.println("            Shipping Address                               Billing Address                              ");
-            System.out.println("            Name: %s                                       Name: %s                                     ", fname, fname);
-            System.out.println("            Address: %s                                    Address: %s                                  ", addr, addr);
-            System.out.println("                     %s                                             %s                                  ", city, city);
-            System.out.println("                     %s                                             %s                                  ", state, state);
-            System.out.println("                     %d                                             %d                                  ", zip, zip);
-            System.out.println("");
-            System.out.println("--------------------------------------------------------------------------------------------------------");
-            System.out.println("ISBN          Title                                                                      $  Qty    Total");
-            System.out.println("--------------------------------------------------------------------------------------------------------");
-            //book info
-            printCartInfo();
-            System.out.println("--------------------------------------------------------------------------------------------------------");
-            System.out.println("Total =                                                                                              $%d", total);
-            System.out.println("--------------------------------------------------------------------------------------------------------");
-            System.out.println("");
-            System.out.println("Press enter to go back to Menu");
+                if(ccNumLength != 15)
+                {
+                    System.out.println("Invalid Entry.");
+                }
+            }while(ccNumLength != 15);
         }
-        else{
-            //return to menu 
-            return;
-        }
+        System.out.println("                              Invoice for Order No.%s                                                  ", orderNum);
+        System.out.println("            Shipping Address                               Billing Address                              ");
+        System.out.println("            Name: %s                                       Name: %s                                     ", fname, fname);
+        System.out.println("            Address: %s                                    Address: %s                                  ", addr, addr);
+        System.out.println("                     %s                                             %s                                  ", city, city);
+        System.out.println("                     %s                                             %s                                  ", state, state);
+        System.out.println("                     %d                                             %d                                  ", zip, zip);
+        System.out.println("");
+        System.out.println("--------------------------------------------------------------------------------------------------------");
+        System.out.println("ISBN          Title                                                                      $  Qty    Total");
+        System.out.println("--------------------------------------------------------------------------------------------------------");
+        //book info
+        printCartInfo();
+        System.out.println("--------------------------------------------------------------------------------------------------------");
+        System.out.println("Total =                                                                                              $%d", total);
+        System.out.println("--------------------------------------------------------------------------------------------------------");
+        System.out.println("");
+        System.out.println("Press enter to go back to Menu");
+
         return;
     }
 
     public static void oneClickCheckout(){
 
-        System.out.println("                              Invoice for Order No.666                                                  ");
+        System.out.println("                              Invoice for Order No. %s                                                  ", orderNum);
         System.out.println("            Shipping Address                               Billing Address                              ");
         System.out.println("            Name: %s                                       Name: %s                                     ", fname, fname);
         System.out.println("            Address: %s                                    Address: %s                                  ", addr, addr);
@@ -454,7 +440,7 @@ public class Main {
     public static void printLoggedInOptions(){
         System.out.println("                                      1. Browse by Subject");
         System.out.println("                                      2. Search by Author/Title/Subject");
-        System.out.println("                                      3. View/Edit Shopping Cart");
+        System.out.println("                                      3. View/Edit Shopping CartEntry");
         System.out.println("                                      4. Check Order Status");
         System.out.println("                                      5. Check Out");
         System.out.println("                                      6. One Click Check Out");
@@ -465,37 +451,41 @@ public class Main {
 
     public static void loggedIn(){
         Scanner keyboard = new Scanner(System.in);
-        while(True){
+        while(true){
             printBanner();
             printLoggedInOptions();
             String choice = keyboard.nextLine();
-            switch (choice[0]){
-                case "1":
+            switch (choice.charAt(0)){
+                case '1':
                     browseBySubject();
                     break;
-                case "2":
+                case '2':
                     search();
                     break;
-                case "3":
+                case '3':
                     viewEditCart();
                     break;
-                case "4":
+                case '4':
                     checkOrderStatus();
                     break;
-                case "5":
+                case '5':
                     checkout();
                     break;
-                case "6":
+                case '6':
                     oneClickCheckout();
                     break;
-                case "7":
+                case '7':
                     viewEditInfo();
                     break;
-                case "8":
+                case '8':
                     return;
                 default:
                     System.out.println("Choose a valid option.");
-                    Thread.sleep(1000);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
             }
             
         }
@@ -524,8 +514,8 @@ public class Main {
             printBanner();
             printMainMenu();
             String choice = keyboard.nextLine();
-            switch (choice[0]) {
-                case "1":
+            switch (choice.charAt(0)) {
+                case '1':
                     authenticated = memberLogin();
                     if(authenticated){
                         loggedIn();
@@ -533,22 +523,27 @@ public class Main {
                         return;
                     }
                     else{
-                        system.out.println("Unauthorized user.");
-                        Thread.sleep(1000);
+                        System.out.println("Unauthorized user.");
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) {
+                            System.out.println(e);
+                        }
                     }
                     break;
-                case "2":
+                case '2':
                     newMemberRegistration();
                     break;
-                case "q":
+                case 'q':
                     return;
                 default:
                     System.out.println("Choose a valid option.");
-                    Thread.sleep(1000);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
             }
         }
-
-
-        return;
     }
 }
