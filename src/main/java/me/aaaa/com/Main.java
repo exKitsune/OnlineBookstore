@@ -10,11 +10,12 @@ import java.util.*;
 
 public class Main {
     private static Connection connection;
-    public static String host, database, username, password, table;
+    public static String host, database, username, password;
     public static int port;
     public static MySQLSetterGetter msg;
 
     public static String currentUser;
+    public static Scanner keyboard;
 
     public static void mysqlSetup() {
 
@@ -93,7 +94,7 @@ public class Main {
         System.out.println("Enter state: ");
         String state = keyboard.nextLine();
         System.out.println("Enter zip: ");
-        int zip = keyboard.nextInt();
+        int zip = Integer.parseInt(keyboard.nextLine());
         System.out.println("Enter phone: ");
         String phone = keyboard.nextLine();
         System.out.println("Enter email address: ");
@@ -144,15 +145,15 @@ public class Main {
         msg.addMember(new Person(fName, lName, addr, city, state, zip, phone, email, uid, pass, ccType, ccNum));
         
         System.out.printf("You have registered successfully.\n");
-        System.out.printf("Name:%-30.30s %s\n", fName, lName);
-        System.out.printf("Address:%-30.30s\n", addr);
-        System.out.printf("City:%-30.30s, %s %d\n", city, state, zip);
-        System.out.printf("Phone:%-30.30s\n", phone);
-        System.out.printf("Email:%-30.30s\n", email);
-        System.out.printf("UserID:%-30.30s\n", uid);
-        System.out.printf("Password:%-30.30s\n", pass);
-        System.out.printf("CreditCard Type:%-30.30s\n", ccType);
-        System.out.printf("CreditCard Number:%-30.30s\n", ccNum); 
+        System.out.printf("Name: %-30.30s %s\n", fName, lName);
+        System.out.printf("Address: %-30.30s\n", addr);
+        System.out.printf("City: %-30.30s, %s %d\n", city, state, zip);
+        System.out.printf("Phone: %-30.30s\n", phone);
+        System.out.printf("Email: %-30.30s\n", email);
+        System.out.printf("UserID: %-30.30s\n", uid);
+        System.out.printf("Password: %-30.30s\n", pass);
+        System.out.printf("CreditCard Type: %-30.30s\n", ccType);
+        System.out.printf("CreditCard Number: %-30.30s\n", ccNum);
         System.out.println("\n");          
     }
     
@@ -176,9 +177,14 @@ public class Main {
         int choice;
 
         do {
+            choice = -1;
             Scanner keyboard = new Scanner(System.in);
             System.out.println("Enter your choice: ");
-            choice = keyboard.nextInt();
+            try {
+                choice = Integer.parseInt(keyboard.nextLine());
+            } catch (Exception e) {
+                System.out.println("Please enter a valid number!");
+            }
 
             if (subjects.size() < choice || choice < 0) {
                 System.out.println("Please enter a valid number!");
@@ -215,7 +221,12 @@ public class Main {
                 Book b = msg.getBook(input);
                 if(!b.getISBN().equals("0000000000")) {
                     System.out.println("Enter Quantity: ");
-                    int qty = keyboard.nextInt();
+                    int qty = -1;
+                    try {
+                        qty = Integer.parseInt(keyboard.nextLine());
+                    } catch (Exception e) {
+                        System.out.println("Invalid quantity.");
+                    }
                     if(qty < 1) {
                         System.out.println("Invalid quantity.");
                     } else {
@@ -224,6 +235,8 @@ public class Main {
                 } else {
                     System.out.println("Invalid ISBN.");
                 }
+                currentIdx -= 2;
+                if (currentIdx < 0) { currentIdx = 0; }
             } else {
                 currentPage++;
             }
@@ -231,19 +244,24 @@ public class Main {
     }
 
     public static void search(){
-        Scanner keyboard = new Scanner(System.in);
         //ResultSet res = msg.listBooks();
         int choice;
+        String input;
         do{
-            System.out.println("1. Author Search")
-            System.out.println("2. Title Search")
-            System.out.println("3. Go back to Member Menu\n")
-            choice = keyboard.nextInt();
+            System.out.println("1. Author Search");
+            System.out.println("2. Title Search");
+            System.out.println("3. Go back to Member Menu\n");
+            choice = -1;
+            try {
+                choice = Integer.parseInt(keyboard.nextLine());
+            } catch (Exception e) {
+                System.out.println("Please enter a valid choice");
+            }
             
             if(choice == 1)
             {
                 System.out.println("\nEnter the Author's name: ");
-                String author = keyboard.next();
+                String author = keyboard.nextLine();
                 List<Book> books = msg.getBooksByQuery("author", author);
         
                 System.out.println("There are " + books.size() + " books matching your query.");
@@ -273,7 +291,7 @@ public class Main {
                             Book b = msg.getBook(input);
                             if(!b.getISBN().equals("0000000000")) {
                                 System.out.println("Enter Quantity: ");
-                                int qty = keyboard.nextInt();
+                                int qty = Integer.parseInt(keyboard.nextLine());
                                 if(qty < 1) {
                                     System.out.println("Invalid quantity.");
                                 } else {
@@ -285,12 +303,15 @@ public class Main {
                         } else {
                             currentPage++;
                         }
+
+                        currentIdx -= 2;
+                        if (currentIdx < 0) { currentIdx = 0; }
                     }
                 }
             }
             else if(choice == 2){
                 System.out.println("\nEnter the book's title: ");
-                String title = keyboard.next();
+                String title = keyboard.nextLine();
                 List<Book> books = msg.getBooksByQuery("title", title);
         
                 System.out.println("There are " + books.size() + " books matching your query.");
@@ -320,7 +341,7 @@ public class Main {
                             Book b = msg.getBook(input);
                             if(!b.getISBN().equals("0000000000")) {
                                 System.out.println("Enter Quantity: ");
-                                int qty = keyboard.nextInt();
+                                int qty = Integer.parseInt(keyboard.nextLine());
                                 if(qty < 1) {
                                     System.out.println("Invalid quantity.");
                                 } else {
@@ -332,11 +353,14 @@ public class Main {
                         } else {
                             currentPage++;
                         }
+
+                        currentIdx -= 2;
+                        if (currentIdx < 0) { currentIdx = 0; }
                     }
                 }
             }
             else if(choice != 3){
-                System.out.println("Invalid input\n")
+                System.out.println("Invalid input\n");
             } 
         }while(choice != 3);
     }
@@ -344,7 +368,7 @@ public class Main {
     public static void viewEditCart(){
         Scanner keyboard = new Scanner(System.in);
         while(true) {
-            List<String> cartISBNs = getAssociatedCartEntryISBNs(currentUser);
+            List<String> cartISBNs = msg.getAssociatedCartEntryISBNs(currentUser);
             double total = 0.0;
 
             System.out.println("Current Cart Contents:                                                                                  ");
@@ -359,7 +383,7 @@ public class Main {
                 System.out.println(myCart.toString(currBook.getPrice(), currBook.getTitle()));
             }
             System.out.println("--------------------------------------------------------------------------------------------------------");
-            System.out.printf("Total =                                                                                              $%d\n", total);
+            System.out.printf("Total =%,97.2f\n", total);
             System.out.println("--------------------------------------------------------------------------------------------------------");
             System.out.println("");
 
@@ -369,18 +393,18 @@ public class Main {
             String choice = keyboard.nextLine();
             if (choice.equalsIgnoreCase("e")) {
                 System.out.println("Enter ISBN of the item: ");
-                String isbn = keyboard.nextInt();
+                String isbn = keyboard.nextLine();
                 System.out.println("Enter new Quantity: ");
-                int quantity = keyboard.nextInt();
-                msg.editCartEntry(currentUser, isbn, newQty);
+                int quantity = Integer.parseInt(keyboard.nextLine());
+                msg.editCartEntry(currentUser, isbn, quantity);
                 System.out.println("Edit Item Completed");
             } else if (choice.equalsIgnoreCase("d")){
                 System.out.println("Enter ISBN of the item: ");
-                String isbn = keyboard.nextInt();
+                String isbn = keyboard.nextLine();
                 msg.editCartEntry(currentUser, isbn, 0);
                 System.out.println("Delete Item Completed");
             } else if (choice.equalsIgnoreCase("q")) {
-                retur;
+                return;
             }
         }
     }
@@ -388,25 +412,25 @@ public class Main {
     public static void checkOrderStatus(){
         Scanner keyboard = new Scanner(System.in);
 
-        System.out.printf("Orders placed by %s %s                                                                                  \n", msg.getMember(currentUser).getFirstName(), msg.getMember(currentUser).getLastName());
-        System.out.println("--------------------------------------------------------------------------------------------------------");
-        System.out.println("ORDER NO    RECEIVED DATE                                                             SHIPPED DATE      ");
-        System.out.println("--------------------------------------------------------------------------------------------------------");
-        List<Integer> orders = msg.getAssociatedOrders(currentUser);
-        for (Integer order : orders){
-            Order currOrder = msg.getOrder(order);
-            System.out.printf("%d          %s                                                                  %s          \n", order.getOrderNum(), order.getOrderDate().toString(), order.getShipDate().toString());
-        }
-        
-        System.out.println("--------------------------------------------------------------------------------------------------------");
-        System.out.println("");
         while (true){
+            System.out.printf("Orders placed by %s %s                                                                                  \n", msg.getMember(currentUser).getFirstName(), msg.getMember(currentUser).getLastName());
+            System.out.println("--------------------------------------------------------------------------------------------------------");
+            System.out.println("ORDER NO    RECEIVED DATE                                                             SHIPPED DATE      ");
+            System.out.println("--------------------------------------------------------------------------------------------------------");
+            List<Integer> orders = msg.getAssociatedOrders(currentUser);
+            for (Integer order : orders){
+                Order currOrder = msg.getOrder(order);
+                System.out.printf("%7d %40s  %10s          \n", currOrder.getOrderNum(), currOrder.getOrderDate().toString(), currOrder.getShipDate().toString());
+            }
+
+            System.out.println("--------------------------------------------------------------------------------------------------------");
+            System.out.println("");
             System.out.println("Enter the Order No to diplay its details or (q) to quit: ");
             String choice = keyboard.nextLine();
             if (choice.equalsIgnoreCase("q")){
                 return;
             }
-            else{
+            else if (orders.contains(Integer.valueOf(choice))){
                 System.out.println(msg.getOrder(Integer.valueOf(choice)).toString());
 
                 List<String> orderISBNs = msg.getAssociatedOrderDetailISBNs(Integer.valueOf(choice));
@@ -419,13 +443,20 @@ public class Main {
                     OrderDetails ode = msg.getOrderDetail(Integer.valueOf(choice), isbn);
                     Book book = msg.getBook(isbn);
                     total += book.getPrice() * ode.getQty();
-                    System.out.println(ode.toString(currBook.getTitle()));
+                    System.out.println(ode.toString(book.getTitle()));
                 }
                 System.out.println("--------------------------------------------------------------------------------------------------------");
-                System.out.printf("Total =                                                                                              $%d\n", total);
+                System.out.printf("Total =%,97.2f\n", total);
                 System.out.println("--------------------------------------------------------------------------------------------------------");
                 System.out.println("");
                                 
+            } else {
+                System.out.println("You do not have access to this order number!");
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                System.out.println(e);
             }
         }
     }
@@ -433,7 +464,11 @@ public class Main {
     public static void checkout(){
         Scanner keyboard = new Scanner(System.in);
         double total = 0.0;
-        List<String> cartISBNs = getAssociatedCartEntryISBNs(currentUser);
+        List<String> cartISBNs = msg.getAssociatedCartEntryISBNs(currentUser);
+        if(cartISBNs.size() == 0) {
+            System.out.println("Sorry, nothing in cart!");
+            return;
+        }
 
         System.out.println("Current Cart Contents:                                                                                  ");
         System.out.println("");
@@ -447,7 +482,7 @@ public class Main {
             System.out.println(myCart.toString(currBook.getPrice(), currBook.getTitle()));
         }
         System.out.println("--------------------------------------------------------------------------------------------------------");
-        System.out.printf("Total =                                                                                              $%d\n", total);
+        System.out.printf("Total =%,97.2f\n", total);
         System.out.println("--------------------------------------------------------------------------------------------------------");
         System.out.println("");
 
@@ -468,7 +503,7 @@ public class Main {
                 System.out.println("Enter state: ");
                 String state = keyboard.nextLine();
                 System.out.println("Enter zip: ");
-                int zip = keyboard.nextInt();
+                int zip = Integer.parseInt(keyboard.nextLine());
 
                 Person currUser = msg.getMember(currentUser);
                 currUser.updateFirstName(fName);
@@ -476,6 +511,7 @@ public class Main {
                 currUser.updateAddr(addr);
                 currUser.updateCity(city);
                 currUser.updateState(state);
+                currUser.updateZip(zip);
                 msg.updateMember(currUser);
             }
             System.out.println("Do you want to enter a new CreditCard number (Y/N): ");
@@ -536,13 +572,13 @@ public class Main {
             }
             msg.addOrder(currOrder);
             
-            System.out.printf("                              Invoice for Order No.%d                                                  \n", orderNum);
+            System.out.printf("                              Invoice for Order No.%d                                                  \n", currOrderNumber);
             System.out.println("            Shipping Address                               Billing Address                              ");
-            System.out.printf("            Name: %s                                       Name: %s                                     \n", fname, fname);
-            System.out.printf("            Address: %s                                    Address: %s                                  \n", addr, addr);
-            System.out.printf("                     %s                                             %s                                  \n", city, city);
-            System.out.printf("                     %s                                             %s                                  \n", state, state);
-            System.out.printf("                     %d                                             %d                                  \n", zip, zip);
+            System.out.printf("            Name: %s %-35s Name: %s %-35s                                  \n", currUser.getFirstName(), currUser.getLastName(), currUser.getFirstName(), currUser.getLastName());
+            System.out.printf("            Address: %-30s Address: %-30s                                  \n", currUser.getAddr(), currUser.getAddr());
+            System.out.printf("                     %-30s          %-30s                                  \n", currUser.getCity(), currUser.getCity());
+            System.out.printf("                     %-30s          %-30s                                  \n", currUser.getState(), currUser.getState());
+            System.out.printf("                     %-30d          %-30d                                  \n", currUser.getZip(), currUser.getZip());
             System.out.println("");
             System.out.println("--------------------------------------------------------------------------------------------------------");
             System.out.println("ISBN          Title                                                                      $  Qty    Total");
@@ -550,36 +586,48 @@ public class Main {
             //book info
             for(String isbn : cartISBNs) {
                 CartEntry myCart = msg.getCartEntry(currentUser, isbn);
-                Book currBook = msg.getBook(isbn);
+                currBook = msg.getBook(isbn);
                 System.out.println(myCart.toString(currBook.getPrice(), currBook.getTitle()));
             }
             System.out.println("--------------------------------------------------------------------------------------------------------");
-            System.out.printf("Total =                                                                                              $%d\n", total);
+            System.out.printf("Total =%,97.2f\n", total);
             System.out.println("--------------------------------------------------------------------------------------------------------");
             System.out.println("");
             System.out.println("Press enter to go back to Menu");
 
             msg.clearCart(currentUser);
         }
+        try {
+            Thread.sleep(2000);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
         return;
     }
 
     public static void oneClickCheckout(){
         double total = 0.0;
+        int currOrderNumber = msg.currentOrderNum();
+        Person currUser = msg.getMember(currentUser);
+        List<String> cartISBNs = msg.getAssociatedCartEntryISBNs(currentUser);
+        if(cartISBNs.size() == 0) {
+            System.out.println("Sorry, nothing in cart!");
+            return;
+        }
 
-        System.out.printf("                              Invoice for Order No. %s                                                  \n", orderNum);
+        System.out.printf("                              Invoice for Order No.%d                                                  \n", currOrderNumber);
         System.out.println("            Shipping Address                               Billing Address                              ");
-        System.out.printf("            Name: %s                                       Name: %s                                     \n", fname, fname);
-        System.out.printf("            Address: %s                                    Address: %s                                  \n", addr, addr);
-        System.out.printf("                     %s                                             %s                                  \n", city, city);
-        System.out.printf("                     %s                                             %s                                  \n", state, state);
-        System.out.printf("                     %d                                             %d                                  \n", zip, zip);
+        System.out.printf("            Name: %s %-35s Name: %s %-35s                                  \n", currUser.getFirstName(), currUser.getLastName(), currUser.getFirstName(), currUser.getLastName());
+        System.out.printf("            Address: %-30s Address: %-30s                                  \n", currUser.getAddr(), currUser.getAddr());
+        System.out.printf("                     %-30s          %-30s                                  \n", currUser.getCity(), currUser.getCity());
+        System.out.printf("                     %-30s          %-30s                                  \n", currUser.getState(), currUser.getState());
+        System.out.printf("                     %-30d          %-30d                                  \n", currUser.getZip(), currUser.getZip());
         System.out.println("");
         System.out.println("--------------------------------------------------------------------------------------------------------");
         System.out.println("ISBN          Title                                                                      $  Qty    Total");
         System.out.println("--------------------------------------------------------------------------------------------------------");
         //book info
-        List<String> cartISBNs = getAssociatedCartEntryISBNs(currentUser);
+
         for(String isbn : cartISBNs) {
             CartEntry myCart = msg.getCartEntry(currentUser, isbn);
             Book currBook = msg.getBook(isbn);
@@ -587,12 +635,10 @@ public class Main {
             System.out.println(myCart.toString(currBook.getPrice(), currBook.getTitle()));
         }
         System.out.println("--------------------------------------------------------------------------------------------------------");
-        System.out.printf("Total =                                                                                              $%d\n", total);
+        System.out.printf("Total =%,97.2f\n", total);
         System.out.println("--------------------------------------------------------------------------------------------------------");
         System.out.println("");
 
-        int currOrderNumber = msg.currentOrderNum();
-        Person currUser = msg.getMember(currentUser);
         Book currBook;
         CartEntry currCart;
         OrderDetails currOrderDetails;
@@ -605,6 +651,11 @@ public class Main {
         }
         msg.addOrder(currOrder);
         msg.clearCart(currentUser);
+        try {
+            Thread.sleep(2000);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
         return;
     }
 
@@ -615,25 +666,22 @@ public class Main {
             System.out.println("2: Edit information.");
             System.out.println("q: Quit.");
             System.out.println("Type your option: ");
-            Person member;
-            String choice = keyboard.nextLine()[0];
+            Person member = msg.getMember(currentUser);
+            char choice = keyboard.nextLine().charAt(0);
             switch (choice){
-                case "1":
-                    System.out.println("Enter UID: ");
-                    String uid = keyboard.nextLine().replaceAll("\n", "");
-                    msg.getMember(uid);
-                    System.out.printf("Name:%-30.30s %s\n", member.getFirstName(), member.getLastName());
-                    System.out.printf("Address:%-30.30s\n", member.getAddr());
-                    System.out.printf("City:%-30.30s, %s %d\n", member.getCity(), member.getState(), mmeber.getZip());
-                    System.out.printf("Phone:%-30.30s\n", member.getPhone());
-                    System.out.printf("Email:%-30.30s\n", member.getEmail());
-                    System.out.printf("UserID:%-30.30s\n", member.getUID());
-                    System.out.printf("Password:%-30.30s\n", member.getPass());
-                    System.out.printf("CreditCard Type:%-30.30s\n", member.getCCType());
-                    System.out.printf("CreditCard Number:%-30.30s\n", member.getCCNum());
+                case '1':
+                    System.out.printf("Name: %-30.30s %s\n", member.getFirstName(), member.getLastName());
+                    System.out.printf("Address: %-30.30s\n", member.getAddr());
+                    System.out.printf("City: %-30.30s, %s %d\n", member.getCity(), member.getState(), member.getZip());
+                    System.out.printf("Phone: %-30.30s\n", member.getPhone());
+                    System.out.printf("Email: %-30.30s\n", member.getEmail());
+                    System.out.printf("UserID: %-30.30s\n", member.getUID());
+                    System.out.printf("Password: %-30.30s\n", member.getPass());
+                    System.out.printf("CreditCard Type: %-30.30s\n", member.getCCType());
+                    System.out.printf("CreditCard Number: %-30.30s\n", member.getCCNum());
                     System.out.println("\n");
                     break;
-                case "2":
+                case '2':
                     System.out.println("Enter first name: ");
                     member.updateFirstName(keyboard.nextLine());
                     System.out.println("Enter last name: ");
@@ -645,7 +693,7 @@ public class Main {
                     System.out.println("Enter state: ");
                     member.updateState(keyboard.nextLine());
                     System.out.println("Enter zip: ");
-                    member.updateZip(keyboard.nextInt());
+                    member.updateZip(Integer.parseInt(keyboard.nextLine()));
                     System.out.println("Enter phone: ");
                     member.updatePhone(keyboard.nextLine());
                     System.out.println("Enter email address: ");
@@ -696,18 +744,18 @@ public class Main {
 
                     msg.updateMember(member);
                     
-                    System.out.printf("Name:%-30.30s %s\n", member.getFirstName(), member.getLastName());
-                    System.out.printf("Address:%-30.30s\n", member.getAddr());
-                    System.out.printf("City:%-30.30s, %s %d\n", member.getCity(), member.getState(), mmeber.getZip());
-                    System.out.printf("Phone:%-30.30s\n", member.getPhone());
-                    System.out.printf("Email:%-30.30s\n", member.getEmail());
-                    System.out.printf("UserID:%-30.30s\n", member.getUID());
-                    System.out.printf("Password:%-30.30s\n", member.getPass());
-                    System.out.printf("CreditCard Type:%-30.30s\n", member.getCCType());
-                    System.out.printf("CreditCard Number:%-30.30s\n", member.getCCNum());
+                    System.out.printf("Name: %-30.30s %s\n", member.getFirstName(), member.getLastName());
+                    System.out.printf("Address: %-30.30s\n", member.getAddr());
+                    System.out.printf("City: %-30.30s, %s %d\n", member.getCity(), member.getState(), member.getZip());
+                    System.out.printf("Phone: %-30.30s\n", member.getPhone());
+                    System.out.printf("Email: %-30.30s\n", member.getEmail());
+                    System.out.printf("UserID: %-30.30s\n", member.getUID());
+                    System.out.printf("Password: %-30.30s\n", member.getPass());
+                    System.out.printf("CreditCard Type: %-30.30s\n", member.getCCType());
+                    System.out.printf("CreditCard Number: %-30.30s\n", member.getCCNum());
                     System.out.println("\n");
                     break;
-                case "q":
+                case 'q':
                     return;
             }
             
@@ -736,7 +784,7 @@ public class Main {
     public static void printLoggedInOptions(){
         System.out.println("                                      1. Browse by Subject");
         System.out.println("                                      2. Search by Author/Title/Subject");
-        System.out.println("                                      3. View/Edit Shopping CartEntry");
+        System.out.println("                                      3. View/Edit Shopping Cart");
         System.out.println("                                      4. Check Order Status");
         System.out.println("                                      5. Check Out");
         System.out.println("                                      6. One Click Check Out");
@@ -792,7 +840,7 @@ public class Main {
     public static void main(String[] args) {
         mysqlSetup();
         msg = new MySQLSetterGetter();
-        msg.addBook(new Book("0000000000", "fruit", "hello world", 420.69, "Tough Reads"));
+        msg.addBook(new Book("1000000000", "fruit", "hello world", 420.69, "Tough Reads"));
         msg.addBook(new Book("0000000001", "robert", "loader instructions", 100.00, "Documentation"));
         msg.addBook(new Book("0000000002", "ellie", "how to retire early", 9999.99, "Memoir"));
         msg.addBook(new Book("0000000003", "james", "boot boot boot boot", 0.01, "Memoir"));
@@ -800,14 +848,14 @@ public class Main {
         msg.addBook(new Book("0000000005", "mitch", "the ABCs of deleting other people's essay sections", 50.00, "Documentation"));
         msg.addBook(new Book("0000000006", "fruit", "how i became a god programmer", 1337.69, "Memoir"));
         msg.addBook(new Book("0000000007", "ellie", "god has left us", 10.00, "VMNames"));
-        msg.addBook(new Book("0000000008", "ellie", "drop kick me through the academic field goal of success", 10.00, "VMNames"));
-        msg.addBook(new Book("0000000009", "ellie", "you are not a clown your are the entire circus: an autobiography", 10.00, "VMNames"));
-        msg.addBook(new Book("0000000010", "ellie", "what up i'm jared 19", 10.00, "VMNames"));
-        msg.addBook(new Book("0000000011", "ellie", "wake me up", 10.00, "VMNames"));
-        msg.addBook(new Book("0000000012", "ellie", "i can't wake up", 10.00, "VMNames"));
+        msg.addBook(new Book("0000000008", "ellie", "drop kick me through the academic field goal of success", 10.01, "VMNames"));
+        msg.addBook(new Book("0000000009", "ellie", "you are not a clown your are the entire circus: an autobiography", 10.02, "VMNames"));
+        msg.addBook(new Book("0000000010", "ellie", "what up i'm jared 19", 10.03, "VMNames"));
+        msg.addBook(new Book("0000000011", "ellie", "wake me up", 10.04, "VMNames"));
+        msg.addBook(new Book("0000000012", "ellie", "i can't wake up", 10.05, "VMNames"));
         msg.addBook(new Book("0000000013", "james", "cat in the hat: shakespeare's greatest work", 10101.10, "Tough Reads"));
 
-        Scanner keyboard = new Scanner(System.in);
+        keyboard = new Scanner(System.in);
         boolean authenticated;
         while(true){
             printBanner();
@@ -823,7 +871,6 @@ public class Main {
                     if(memberLogin(userid, password)){
                         loggedIn(userid);
                         System.out.println("You have successfully logged out.");
-                        return;
                     }
                     else{
                         System.out.println("Unauthorized user.");

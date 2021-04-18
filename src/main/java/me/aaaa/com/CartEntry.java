@@ -25,6 +25,6 @@ public class CartEntry {
     }
 
     public String toString(double price, String title) {
-        return String.format("%s    %s              %,.2f  %d    %,.2f", ISBN, title, price, qty, qty*price);
+        return String.format("%10s    %-60s      %,10.2f    %-5d %,-8.2f", ISBN, title, price, qty, qty*price);
     }
 }

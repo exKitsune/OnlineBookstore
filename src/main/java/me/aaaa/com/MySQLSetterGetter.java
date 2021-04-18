@@ -53,8 +53,8 @@ public class MySQLSetterGetter {
         return new Book();
     }
 
-    public List<Books> getBooksByQuery(String queryType, String query) { //queryTypes: "author", "title", "subject"
-        List<Books> books = new ArrayList<>();
+    public List<Book> getBooksByQuery(String queryType, String query) { //queryTypes: "author", "title", "subject"
+        List<Book> books = new ArrayList<>();
         try {
             PreparedStatement statement = Main.getConnection().prepareStatement("SELECT * FROM books WHERE " + queryType + "=?");
             statement.setString(1, query);
@@ -75,7 +75,7 @@ public class MySQLSetterGetter {
     public List<String> getBookSubjects(){
         List<String> subjects = new ArrayList<>();
         try {
-            PreparedStatement statement = Main.getConnection().prepareStatement("SELECT subject FROM books ORDER BY subject");
+            PreparedStatement statement = Main.getConnection().prepareStatement("SELECT DISTINCT subject FROM books ORDER BY subject");
             ResultSet results = statement.executeQuery();
 
             while (results.next()) {
@@ -287,7 +287,7 @@ public class MySQLSetterGetter {
     public List<String> getAssociatedOrderDetailISBNs(int orderNum) {
         List<String> isbns = new ArrayList<>();
         try {
-            PreparedStatement statement = Main.getConnection().prepareStatement("SELECT isbn FROM odetails WHERE ono=? ORDER BY isbn");
+            PreparedStatement statement = Main.getConnection().prepareStatement("SELECT DISTINCT isbn FROM odetails WHERE ono=? ORDER BY isbn");
             statement.setInt(1, orderNum);
 
             ResultSet results = statement.executeQuery();
@@ -396,8 +396,13 @@ public class MySQLSetterGetter {
                 PreparedStatement insert;
                 if(newQty > 0) {
                     insert = Main.getConnection().prepareStatement("UPDATE cart SET qty=? WHERE userid=? AND isbn=?");
+                    insert.setInt(1, newQty);
+                    insert.setString(2, userid);
+                    insert.setString(3, ISBN);
                 } else {
                     insert = Main.getConnection().prepareStatement("DELETE FROM cart WHERE userid=? AND isbn=?");
+                    insert.setString(1, userid);
+                    insert.setString(2, ISBN);
                 }
 
                 insert.executeUpdate();

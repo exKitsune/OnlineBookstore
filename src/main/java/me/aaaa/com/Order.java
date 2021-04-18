@@ -34,6 +34,7 @@ public class Order {
         this.city = city;
         this.state = state;
         this.zip = zip;
+
     }
 
     public Order() {}
