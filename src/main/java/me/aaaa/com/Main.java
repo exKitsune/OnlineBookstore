@@ -94,7 +94,12 @@ public class Main {
         System.out.println("Enter state: ");
         String state = keyboard.nextLine();
         System.out.println("Enter zip: ");
-        int zip = Integer.parseInt(keyboard.nextLine());
+        int zip = 0;
+        try {
+            zip = Integer.parseInt(keyboard.nextLine());
+        } catch (Exception e) {
+            System.out.println("Invalid zip code! Please edit later.");
+        }
         System.out.println("Enter phone: ");
         String phone = keyboard.nextLine();
         System.out.println("Enter email address: ");
@@ -107,7 +112,7 @@ public class Main {
         String option = keyboard.nextLine();
 
         //TODO: Add if/else statement for registration success/failure
-        String ccType = "None";
+        String ccType = "visa";
         String ccNum = "0000000000000000";
         if(option.equalsIgnoreCase("y")) {
             while (true) {
@@ -503,7 +508,12 @@ public class Main {
                 System.out.println("Enter state: ");
                 String state = keyboard.nextLine();
                 System.out.println("Enter zip: ");
-                int zip = Integer.parseInt(keyboard.nextLine());
+                int zip = 0;
+                try {
+                    zip = Integer.parseInt(keyboard.nextLine());
+                } catch (Exception e) {
+                    System.out.println("Invalid zip code! Please edit later.");
+                }
 
                 Person currUser = msg.getMember(currentUser);
                 currUser.updateFirstName(fName);
@@ -517,7 +527,7 @@ public class Main {
             System.out.println("Do you want to enter a new CreditCard number (Y/N): ");
             choice = keyboard.nextLine();
             
-            String ccType = "";
+            String ccType = "visa";
             String ccNum = "0000000000000000";
 
             if (choice.equalsIgnoreCase("y")){
@@ -693,7 +703,13 @@ public class Main {
                     System.out.println("Enter state: ");
                     member.updateState(keyboard.nextLine());
                     System.out.println("Enter zip: ");
-                    member.updateZip(Integer.parseInt(keyboard.nextLine()));
+                    int zip = 0;
+                    try {
+                        zip = Integer.parseInt(keyboard.nextLine());
+                    } catch (Exception e) {
+                        System.out.println("Invalid zip code! Please edit later.");
+                    }
+                    member.updateZip(zip);
                     System.out.println("Enter phone: ");
                     member.updatePhone(keyboard.nextLine());
                     System.out.println("Enter email address: ");
@@ -703,7 +719,7 @@ public class Main {
                     System.out.println("Do you wish to update credit card information (y/n): ");
                     String option = keyboard.nextLine();
 
-                    String ccType = "None";
+                    String ccType = "visa";
                     String ccNum = "0000000000000000";
                     if(option.equals('y')) {
                         while (true) {
