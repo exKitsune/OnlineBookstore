@@ -106,6 +106,10 @@ public class Main {
         String email = keyboard.nextLine();
         System.out.println("Enter userID: ");
         String uid = keyboard.nextLine();
+        if(uid.isEmpty()) {
+            System.out.println("Error! Username needed!");
+            return;
+        }
         System.out.println("Enter password: ");
         String pass = keyboard.nextLine();
         System.out.println("Do you wish to store credit card information(y/n): ");
@@ -215,6 +219,12 @@ public class Main {
                 currentIdx++;
             }
 
+            if(currentIdx >= books.size()) {
+                System.out.println("Returned to the first page!");
+                currentIdx = 0;
+                currentPage = 1;
+            }
+
             System.out.println("Enter ISBN to add to cart or\n" +
                                 "n ENTER to browse or\n" +
                                 "ENTER to go back to menu:\n");
@@ -285,6 +295,12 @@ public class Main {
                             currentIdx++;
                         }
 
+                        if(currentIdx >= books.size()) {
+                            System.out.println("Returned to the first page!");
+                            currentIdx = 0;
+                            currentPage = 1;
+                        }
+
                         System.out.println("Enter ISBN to add to cart or\n" +
                                             "n ENTER to browse or\n" +
                                             "ENTER to go back to menu:\n");
@@ -296,7 +312,12 @@ public class Main {
                             Book b = msg.getBook(input);
                             if(!b.getISBN().equals("0000000000")) {
                                 System.out.println("Enter Quantity: ");
-                                int qty = Integer.parseInt(keyboard.nextLine());
+                                int qty = -1;
+                                try {
+                                    qty = Integer.parseInt(keyboard.nextLine());
+                                } catch (Exception e) {
+                                    System.out.println("Invalid quantity.");
+                                }
                                 if(qty < 1) {
                                     System.out.println("Invalid quantity.");
                                 } else {
@@ -335,6 +356,12 @@ public class Main {
                             currentIdx++;
                         }
 
+                        if(currentIdx >= books.size()) {
+                            System.out.println("Returned to the first page!");
+                            currentIdx = 0;
+                            currentPage = 1;
+                        }
+
                         System.out.println("Enter ISBN to add to cart or\n" +
                                             "n ENTER to browse or\n" +
                                             "ENTER to go back to menu:\n");
@@ -346,7 +373,12 @@ public class Main {
                             Book b = msg.getBook(input);
                             if(!b.getISBN().equals("0000000000")) {
                                 System.out.println("Enter Quantity: ");
-                                int qty = Integer.parseInt(keyboard.nextLine());
+                                int qty = -1;
+                                try {
+                                    qty = Integer.parseInt(keyboard.nextLine());
+                                } catch (Exception e) {
+                                    System.out.println("Invalid quantity.");
+                                }
                                 if(qty < 1) {
                                     System.out.println("Invalid quantity.");
                                 } else {
@@ -400,9 +432,13 @@ public class Main {
                 System.out.println("Enter ISBN of the item: ");
                 String isbn = keyboard.nextLine();
                 System.out.println("Enter new Quantity: ");
-                int quantity = Integer.parseInt(keyboard.nextLine());
-                msg.editCartEntry(currentUser, isbn, quantity);
-                System.out.println("Edit Item Completed");
+                try {
+                    int quantity = Integer.parseInt(keyboard.nextLine());
+                    msg.editCartEntry(currentUser, isbn, quantity);
+                    System.out.println("Edit Item Completed");
+                } catch (Exception e) {
+                    System.out.println("Error, invalid quantity!");
+                }
             } else if (choice.equalsIgnoreCase("d")){
                 System.out.println("Enter ISBN of the item: ");
                 String isbn = keyboard.nextLine();
@@ -425,12 +461,12 @@ public class Main {
             List<Integer> orders = msg.getAssociatedOrders(currentUser);
             for (Integer order : orders){
                 Order currOrder = msg.getOrder(order);
-                System.out.printf("%7d %40s  %10s          \n", currOrder.getOrderNum(), currOrder.getOrderDate().toString(), currOrder.getShipDate().toString());
+                System.out.printf("%7d     %-65s  %10s          \n", currOrder.getOrderNum(), currOrder.getOrderDate().toString(), currOrder.getShipDate().toString());
             }
 
             System.out.println("--------------------------------------------------------------------------------------------------------");
             System.out.println("");
-            System.out.println("Enter the Order No to diplay its details or (q) to quit: ");
+            System.out.println("Enter the Order No to display its details or (q) to quit: ");
             String choice = keyboard.nextLine();
             if (choice.equalsIgnoreCase("q")){
                 return;
@@ -469,11 +505,19 @@ public class Main {
     public static void checkout(){
         Scanner keyboard = new Scanner(System.in);
         double total = 0.0;
+        Person currUser = msg.getMember(currentUser);
         List<String> cartISBNs = msg.getAssociatedCartEntryISBNs(currentUser);
         if(cartISBNs.size() == 0) {
             System.out.println("Sorry, nothing in cart!");
             return;
         }
+
+        if(currUser.getCCNum().equals("0000000000000000")) {
+            System.out.println("Sorry, no credit card!");
+            return;
+        }
+
+
 
         System.out.println("Current Cart Contents:                                                                                  ");
         System.out.println("");
@@ -515,7 +559,6 @@ public class Main {
                     System.out.println("Invalid zip code! Please edit later.");
                 }
 
-                Person currUser = msg.getMember(currentUser);
                 currUser.updateFirstName(fName);
                 currUser.updateLastName(lName);
                 currUser.updateAddr(addr);
@@ -562,14 +605,12 @@ public class Main {
                     }while(ccNum.length() != 16);
                 }
 
-                Person currUser = msg.getMember(currentUser);
                 currUser.updateCCType(ccType);
                 currUser.updateCCNum(ccNum);
                 msg.updateMember(currUser);
             }
             
             int currOrderNumber = msg.currentOrderNum();
-            Person currUser = msg.getMember(currentUser);
             Book currBook;
             CartEntry currCart;
             OrderDetails currOrderDetails;
@@ -622,6 +663,11 @@ public class Main {
         List<String> cartISBNs = msg.getAssociatedCartEntryISBNs(currentUser);
         if(cartISBNs.size() == 0) {
             System.out.println("Sorry, nothing in cart!");
+            return;
+        }
+
+        if(currUser.getCCNum().equals("0000000000000000")) {
+            System.out.println("Sorry, no credit card!");
             return;
         }
 
@@ -680,9 +726,9 @@ public class Main {
             char choice = keyboard.nextLine().charAt(0);
             switch (choice){
                 case '1':
-                    System.out.printf("Name: %-30.30s %s\n", member.getFirstName(), member.getLastName());
+                    System.out.printf("Name: %s %s\n", member.getFirstName(), member.getLastName());
                     System.out.printf("Address: %-30.30s\n", member.getAddr());
-                    System.out.printf("City: %-30.30s, %s %d\n", member.getCity(), member.getState(), member.getZip());
+                    System.out.printf("City: %s, %s %d\n", member.getCity(), member.getState(), member.getZip());
                     System.out.printf("Phone: %-30.30s\n", member.getPhone());
                     System.out.printf("Email: %-30.30s\n", member.getEmail());
                     System.out.printf("UserID: %-30.30s\n", member.getUID());
@@ -760,9 +806,9 @@ public class Main {
 
                     msg.updateMember(member);
                     
-                    System.out.printf("Name: %-30.30s %s\n", member.getFirstName(), member.getLastName());
+                    System.out.printf("Name: %s %s\n", member.getFirstName(), member.getLastName());
                     System.out.printf("Address: %-30.30s\n", member.getAddr());
-                    System.out.printf("City: %-30.30s, %s %d\n", member.getCity(), member.getState(), member.getZip());
+                    System.out.printf("City: %s, %s %d\n", member.getCity(), member.getState(), member.getZip());
                     System.out.printf("Phone: %-30.30s\n", member.getPhone());
                     System.out.printf("Email: %-30.30s\n", member.getEmail());
                     System.out.printf("UserID: %-30.30s\n", member.getUID());
@@ -816,6 +862,9 @@ public class Main {
             printBanner();
             printLoggedInOptions();
             String choice = keyboard.nextLine();
+            if(choice.equals("")) {
+                choice = "0";
+            }
             switch (choice.charAt(0)){
                 case '1':
                     browseBySubject();
