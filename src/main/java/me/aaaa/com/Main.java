@@ -154,9 +154,9 @@ public class Main {
         msg.addMember(new Person(fName, lName, addr, city, state, zip, phone, email, uid, pass, ccType, ccNum));
         
         System.out.printf("You have registered successfully.\n");
-        System.out.printf("Name: %-30.30s %s\n", fName, lName);
+        System.out.printf("Name: %s %s\n", fName, lName);
         System.out.printf("Address: %-30.30s\n", addr);
-        System.out.printf("City: %-30.30s, %s %d\n", city, state, zip);
+        System.out.printf("City: %s, %s %d\n", city, state, zip);
         System.out.printf("Phone: %-30.30s\n", phone);
         System.out.printf("Email: %-30.30s\n", email);
         System.out.printf("UserID: %-30.30s\n", uid);
@@ -461,7 +461,7 @@ public class Main {
             List<Integer> orders = msg.getAssociatedOrders(currentUser);
             for (Integer order : orders){
                 Order currOrder = msg.getOrder(order);
-                System.out.printf("%7d     %-65s  %10s          \n", currOrder.getOrderNum(), currOrder.getOrderDate().toString(), currOrder.getShipDate().toString());
+                System.out.printf("%7d     %-70s  %10s          \n", currOrder.getOrderNum(), currOrder.getOrderDate().toString(), currOrder.getShipDate().toString());
             }
 
             System.out.println("--------------------------------------------------------------------------------------------------------");
@@ -845,7 +845,7 @@ public class Main {
 
     public static void printLoggedInOptions(){
         System.out.println("                                      1. Browse by Subject");
-        System.out.println("                                      2. Search by Author/Title/Subject");
+        System.out.println("                                      2. Search by Author/Title");
         System.out.println("                                      3. View/Edit Shopping Cart");
         System.out.println("                                      4. Check Order Status");
         System.out.println("                                      5. Check Out");
